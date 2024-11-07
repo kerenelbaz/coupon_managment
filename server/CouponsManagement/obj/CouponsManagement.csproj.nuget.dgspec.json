@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/kerenelbaz/Projects/CouponsManagement/CouponsManagement/CouponsManagement.csproj": {}
+    "/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/CouponsManagement.csproj": {}
   },
   "projects": {
-    "/Users/kerenelbaz/Projects/CouponsManagement/CouponsManagement/CouponsManagement.csproj": {
+    "/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/CouponsManagement.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/kerenelbaz/Projects/CouponsManagement/CouponsManagement/CouponsManagement.csproj",
+        "projectUniqueName": "/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/CouponsManagement.csproj",
         "projectName": "CouponsManagement",
-        "projectPath": "/Users/kerenelbaz/Projects/CouponsManagement/CouponsManagement/CouponsManagement.csproj",
+        "projectPath": "/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/CouponsManagement.csproj",
         "packagesPath": "/Users/kerenelbaz/.nuget/packages/",
-        "outputPath": "/Users/kerenelbaz/Projects/CouponsManagement/CouponsManagement/obj/",
+        "outputPath": "/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/kerenelbaz/.nuget/NuGet/NuGet.Config"

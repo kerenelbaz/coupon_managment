@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "IR+rFUTbatrEgjwAOAS/nnc2lWX8z5HeMTD6FRgNcSDe5idPIo2HDQITBhbbsoGi2YAyekKssvu5mpOZF0GJJw==",
+  "dgSpecHash": "cLoX350YXqqv2ocD+lh4Bj0XyfLbmNlqxqUCFmBewlCRFdt2wGCGkNlYkSOAw9io9LZw4it0oWt8AAL5PXQUeA==",
   "success": true,
-  "projectFilePath": "/Users/kerenelbaz/Projects/CouponsManagement/CouponsManagement/CouponsManagement.csproj",
+  "projectFilePath": "/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/CouponsManagement.csproj",
   "expectedPackageFiles": [
     "/Users/kerenelbaz/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.aspnetcore.openapi/7.0.5/microsoft.aspnetcore.openapi.7.0.5.nupkg.sha512",
