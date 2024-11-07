@@ -1,14 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "cLoX350YXqqv2ocD+lh4Bj0XyfLbmNlqxqUCFmBewlCRFdt2wGCGkNlYkSOAw9io9LZw4it0oWt8AAL5PXQUeA==",
+  "dgSpecHash": "dXTcR3paXP0/B359S31DrYPJi6wfUdogUNET3lJQBX7fgvQRpns3OhBBo6T7INllwz5xt6S9KhMTHEkzqn/8Gg==",
   "success": true,
   "projectFilePath": "/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/CouponsManagement.csproj",
   "expectedPackageFiles": [
     "/Users/kerenelbaz/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
+    "/Users/kerenelbaz/.nuget/packages/humanizer.core/2.8.26/humanizer.core.2.8.26.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.aspnetcore.openapi/7.0.5/microsoft.aspnetcore.openapi.7.0.5.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.entityframeworkcore/6.0.28/microsoft.entityframeworkcore.6.0.28.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.entityframeworkcore.abstractions/6.0.28/microsoft.entityframeworkcore.abstractions.6.0.28.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.entityframeworkcore.analyzers/6.0.28/microsoft.entityframeworkcore.analyzers.6.0.28.nupkg.sha512",
+    "/Users/kerenelbaz/.nuget/packages/microsoft.entityframeworkcore.design/6.0.3/microsoft.entityframeworkcore.design.6.0.3.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.entityframeworkcore.relational/6.0.28/microsoft.entityframeworkcore.relational.6.0.28.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.extensions.caching.abstractions/6.0.0/microsoft.extensions.caching.abstractions.6.0.0.nupkg.sha512",
