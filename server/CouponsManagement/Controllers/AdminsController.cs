@@ -24,7 +24,14 @@ namespace CouponsManagement.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest req)
         {
+            var username = HttpContext.Session.GetString("Username");
+            if (username == null || username == "")
+            {
+                return Unauthorized("Only connected admin allow to create user.");
+            }
+
             var existAdmin = await _context.Admins.SingleOrDefaultAsync(admin => admin.Username == req.Username);
+
             if (existAdmin != null)
                 return BadRequest("Admin's username already exists.");
 
@@ -38,8 +45,6 @@ namespace CouponsManagement.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Created new admin successfuly.");
-
-
 
         }
 
