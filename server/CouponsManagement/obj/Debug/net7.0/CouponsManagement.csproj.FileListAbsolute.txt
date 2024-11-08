@@ -39,3 +39,4 @@
 /Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/obj/Debug/net7.0/ref/CouponsManagement.dll
 /Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/Humanizer.dll
 /Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/Microsoft.EntityFrameworkCore.Design.dll
+/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/System.Security.Permissions.dll
