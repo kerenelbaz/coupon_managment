@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "n01UyFD725lFoO/EWo8O2qUULeWiyE6TKVMlAb/CRqDmMsaVI+Uz8viW4rbY1u6ciQfU3uzlbEdNvlc5GXEK1g==",
+  "dgSpecHash": "V+ZDH/5cZD/k7qxetAJL6B/q8Islx06T9MYihM0DnouVcfRO6zSsXGuZHePXIG/xEtGKWCfJBgn+GdAfN2nUXQ==",
   "success": true,
   "projectFilePath": "/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/CouponsManagement.csproj",
   "expectedPackageFiles": [
@@ -13,8 +13,11 @@
     "/Users/kerenelbaz/.nuget/packages/microsoft.aspnetcore.hosting.server.abstractions/2.2.0/microsoft.aspnetcore.hosting.server.abstractions.2.2.0.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.aspnetcore.http.abstractions/2.2.0/microsoft.aspnetcore.http.abstractions.2.2.0.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.aspnetcore.http.features/2.2.0/microsoft.aspnetcore.http.features.2.2.0.nupkg.sha512",
+    "/Users/kerenelbaz/.nuget/packages/microsoft.aspnetcore.jsonpatch/6.0.35/microsoft.aspnetcore.jsonpatch.6.0.35.nupkg.sha512",
+    "/Users/kerenelbaz/.nuget/packages/microsoft.aspnetcore.mvc.newtonsoftjson/6.0.0/microsoft.aspnetcore.mvc.newtonsoftjson.6.0.0.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.aspnetcore.openapi/7.0.5/microsoft.aspnetcore.openapi.7.0.5.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.aspnetcore.session/2.2.0/microsoft.aspnetcore.session.2.2.0.nupkg.sha512",
+    "/Users/kerenelbaz/.nuget/packages/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.entityframeworkcore/6.0.28/microsoft.entityframeworkcore.6.0.28.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.entityframeworkcore.abstractions/6.0.28/microsoft.entityframeworkcore.abstractions.6.0.28.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.entityframeworkcore.analyzers/6.0.28/microsoft.entityframeworkcore.analyzers.6.0.28.nupkg.sha512",
@@ -36,6 +39,8 @@
     "/Users/kerenelbaz/.nuget/packages/microsoft.openapi/1.4.3/microsoft.openapi.1.4.3.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/microsoft.win32.registry/4.5.0/microsoft.win32.registry.4.5.0.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/mysqlconnector/2.1.2/mysqlconnector.2.1.2.nupkg.sha512",
+    "/Users/kerenelbaz/.nuget/packages/newtonsoft.json/13.0.1/newtonsoft.json.13.0.1.nupkg.sha512",
+    "/Users/kerenelbaz/.nuget/packages/newtonsoft.json.bson/1.0.2/newtonsoft.json.bson.1.0.2.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/pomelo.entityframeworkcore.mysql/6.0.3/pomelo.entityframeworkcore.mysql.6.0.3.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/swashbuckle.aspnetcore/6.4.0/swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "/Users/kerenelbaz/.nuget/packages/swashbuckle.aspnetcore.swagger/6.4.0/swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",

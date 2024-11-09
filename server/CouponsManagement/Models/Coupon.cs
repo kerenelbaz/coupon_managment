@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CouponsManagement.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CouponsManagement.Models
@@ -14,9 +16,7 @@ namespace CouponsManagement.Models
         [Required]
         public string Code { get; set; }
         public bool IsDoublePromotions { get; set; }
-        [Required]
-        public string Description { get; set; }
-        public Admin Admin { get; set; }
+
         [ForeignKey("AdminId")]
         public int AdminId { get; set; }
 
@@ -28,6 +28,11 @@ namespace CouponsManagement.Models
         public double Discount { get; set; }
         public DateTime? ExpirationDate { get; set; } // null value means no experation
         public int? MaxUsage { get; set; } // null value means unlimited usage
+
+        [Required]
+        public string Description { get; set; }
+
+             
     }
 }
 
