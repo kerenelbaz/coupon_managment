@@ -56,7 +56,7 @@ namespace CouponsManagement.Controllers
             if (adminUser == null || !BCrypt.Net.BCrypt.Verify(req.Password, adminUser.Password))
                 return Unauthorized("Invalid username or password");
 
-            HttpContext.Session.SetString("Username", adminUser.Username);
+            HttpContext.Session.SetString("Username", adminUser.Username); // save the logged admin in the session
 
             return Ok("Loggin successful!");
 
