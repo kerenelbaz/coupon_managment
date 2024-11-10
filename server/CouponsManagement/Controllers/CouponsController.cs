@@ -132,8 +132,6 @@ namespace CouponsManagement.Controllers
             return Ok("Coupon deleted");
         }
 
-        //private static double price = 100;
-
         [HttpPost("apply-coupon")]
         public async Task<IActionResult> ApplyCoupons([FromBody] string couponCode)
         {
@@ -167,12 +165,23 @@ namespace CouponsManagement.Controllers
             else if (coupon.MaxUsage.HasValue && coupon.MaxUsage <= 0)
                 return BadRequest("Coupon code used the max usage");
 
+            //check if coupon code has no double promotion
+            string doublePromotionFlag = HttpContext.Session.GetString("DoublePromotion");
+            if (doublePromotionFlag == "false")
+                return BadRequest("You used a non double promotion code beforeת can't use this code now.");
 
+            if (!coupon.IsDoublePromotions) //saving to the session in case the current coupon is not allow double promotion
+            {
+                HttpContext.Session.SetString("DoublePromotion", "false");
+            }
 
             if (coupon.IsPercentageDiscount)
                 finalPrice -= ((finalPrice * coupon.Discount) / 100);
             else finalPrice -= coupon.Discount;
-            
+
+            if (finalPrice <= 0)
+                return BadRequest("You reached the minimum discounted price");
+
             HttpContext.Session.SetString("price", finalPrice.ToString());
 
             return Ok($"Price after discount is:{finalPrice}");

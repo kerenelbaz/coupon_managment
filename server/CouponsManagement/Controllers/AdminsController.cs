@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CouponsManagement.Models;
 using CouponsManagement.Data;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CouponsManagement.Controllers
 {

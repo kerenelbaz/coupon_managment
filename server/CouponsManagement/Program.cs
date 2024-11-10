@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+
 // memory cache to support the sessions
 // builder.Services.AddDistributedMemoryCache();
 builder.Services.AddDistributedMemoryCache(); 

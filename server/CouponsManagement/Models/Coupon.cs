@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using CouponsManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
 namespace CouponsManagement.Models
 {
@@ -14,6 +13,7 @@ namespace CouponsManagement.Models
         [Key]
         public int CouponId { get; set; }
         [Required]
+        [Column(TypeName = "varchar(50)")]
         public string Code { get; set; }
         public bool IsDoublePromotions { get; set; }
 
