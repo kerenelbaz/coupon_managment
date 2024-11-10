@@ -3,7 +3,8 @@ using CouponsManagement.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CouponsManagement.Models;
-using Microsoft.AspNetCore.JsonPatch;
+using System.Data;
+using ClosedXML.Excel;
 
 namespace CouponsManagement.Controllers
 {
@@ -198,10 +199,108 @@ namespace CouponsManagement.Controllers
         }
 
 
+        [HttpGet("CouponByAdmin/{username}")]
+        public async Task<IActionResult> GetCouponsByCreatedAdmin(string username)
+        {
+            // Checking if admin is logged in
+            var sessionAdmin = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(sessionAdmin))
+                return Unauthorized("Please login with admin credential first");
+
+            //find admin by username
+            var admin = await _context.Admins.SingleOrDefaultAsync(a => a.Username == username);
+            if (admin == null) return NotFound("Admin not found");
+
+            //get all coupons created by specific admin
+            var coupons = await _context.Coupons.Where(c => c.AdminId == admin.AdminId).ToListAsync();
+            if (coupons == null || coupons.Count == 0)
+            {
+                return BadRequest("Admin didn't create coupons yet.");
+            }
+            return Ok(coupons);
+            
+        }
+
+        [HttpGet("dateRange")]
+        public async Task <IActionResult> GetCouponsByDateRange(string d1, string d2)
+        {
+            // Checking if admin is logged in
+            var sessionAdmin = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(sessionAdmin))
+                return Unauthorized("Please login with admin credential first");
+
+            
+            DateTime startDate = DateTime.Parse(d1);
+            DateTime endDate = DateTime.Parse(d2);
+
+            if (d1 == null || d2 == null)
+                return BadRequest("Oops, invalid date. insert dates in the format dd-MM-yyyy");
+
+            var coupons = await _context.Coupons.Where(c => c.CreatedDate.Date >=
+            startDate && c.CreatedDate.Date <= endDate).ToListAsync();
+
+            if (!coupons.Any()) return NotFound("No coupons found during date range");
+            
+
+            return (Ok(coupons));
+
+
+        }
+
+
+        [HttpGet("ExportExcel")]
+        public ActionResult ExportExcel()
+        {
+            var _couponData = GetCouponsData();
+
+            //declare on excel workbook
+            using(XLWorkbook wb=new XLWorkbook())
+            {
+                wb.AddWorksheet(_couponData, "Coupons Records"); //sheet name
+
+                using(MemoryStream ms = new MemoryStream())
+                {
+                    wb.SaveAs(ms);
+                    return File(ms.ToArray(),"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","Coupons_Report.xlsx");
+                }
+
+            }
+
+
+        }
+        [NonAction]
+        private DataTable GetCouponsData() {
+
+            DataTable dt = new DataTable();
+            dt.TableName = "Coupons";
+            dt.Columns.Add("CouponId", typeof(int));
+            dt.Columns.Add("Code", typeof(string));
+            dt.Columns.Add("IsDoublePromotions", typeof(bool));
+            dt.Columns.Add("AdminId", typeof(int));
+            dt.Columns.Add("CreatedDate", typeof(DateTime));
+            dt.Columns.Add("IsPercentageDiscount", typeof(bool));
+            dt.Columns.Add("Discount", typeof(double));
+            dt.Columns.Add("ExpirationDate", typeof(DateTime));
+            dt.Columns.Add("MaxUsage", typeof(int));
+            dt.Columns.Add("Description", typeof(string));
+
+            var _list = this._context.Coupons.ToList();
+            if(_list.Count >0)
+            {
+                _list.ForEach(item =>
+                {
+                    dt.Rows.Add(item.CouponId, item.Code, item.IsDoublePromotions,
+                        item.AdminId, item.CreatedDate, item.IsPercentageDiscount,
+                        item.Discount, item.ExpirationDate, item.MaxUsage, item.Description);
+                });
+            }    
+            return dt;
+
+        }
+
     }
 
-    
-
+   
    
 }
 

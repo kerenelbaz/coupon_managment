@@ -44,3 +44,11 @@
 /Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 /Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/Newtonsoft.Json.dll
 /Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/Newtonsoft.Json.Bson.dll
+/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/ClosedXML.dll
+/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/ClosedXML.Parser.dll
+/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/DocumentFormat.OpenXml.dll
+/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/DocumentFormat.OpenXml.Framework.dll
+/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/ExcelNumberFormat.dll
+/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/RBush.dll
+/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/SixLabors.Fonts.dll
+/Users/kerenelbaz/Projects/coupon_managment/server/CouponsManagement/bin/Debug/net7.0/System.IO.Packaging.dll
