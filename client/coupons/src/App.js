@@ -28,7 +28,7 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/coupon-management" element={<CouponsManage />} />
           <Route path="/Register" element={<Register />} />
-          
+
         </Routes>
       </header>
     </div>

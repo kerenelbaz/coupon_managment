@@ -16,12 +16,14 @@ import EditCouponForm from './EditCouponForm';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import CreateCoupon from './CreateCoupon';
 
 
 export default function CouponsManage() {
     const navigate = useNavigate();
     const [couponsData, setCouponsData] = useState([]);
     const [editingCoupon, setEditingCoupon] = useState(null); //usestate for the coupon who editing
+    const [createCoupon, setCreateCoupon] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,9 +38,8 @@ export default function CouponsManage() {
                     throw new Error('Failed to fetch data');
                 }
                 const responseData = await response.json();
-                console.log("Fetched Data:", responseData); // Add this line to log the fetched data
-
                 setCouponsData(responseData);
+
             } catch (e) {
                 console.error('Error fetching data:', e.message, e);
 
@@ -46,6 +47,7 @@ export default function CouponsManage() {
         };
         fetchData();
     }, []);
+
 
     const handleEditCoupon = (coupon) => {
         console.log("Edit coupon");
@@ -82,28 +84,29 @@ export default function CouponsManage() {
 
     // handle logout admin user 
     const handleLogout = async () => {
-        try{const response = await fetch('https://localhost:7048/api/Admins/Logout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-            }),
-            credentials: 'include'
-        });
-        if (response.ok) {
-            console.log("Login successful")
-            navigate('/');
+        try {
+            const response = await fetch('https://localhost:7048/api/Admins/Logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                }),
+                credentials: 'include'
+            });
+            if (response.ok) {
+                console.log("Login successful")
+                navigate('/');
+            }
+            else {
+                console.log('Logout failed');
+            }
+        } catch (e) {
+            console.log("Error during logout:", e);
         }
-        else {
-            console.log('Logout failed');
-        }
-    } catch (e) {
-        console.log("Error during logout:", e);
-    }
     }
 
-    const handleDeleteCoupon = async (couponId)=>{
+    const handleDeleteCoupon = async (couponId) => {
         console.log(couponId)
         try {
             const response = await fetch(`https://localhost:7048/api/Coupons/${couponId}`, {
@@ -111,7 +114,7 @@ export default function CouponsManage() {
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include'
             });
-    
+
             if (response.ok) {
                 // filter out the deleted coupon from the local state
                 const updatedCoupons = couponsData.filter(coupon => coupon.couponId !== couponId);
@@ -125,34 +128,69 @@ export default function CouponsManage() {
         }
     }
 
+    const handleCreateNewCoupon = async (newCoupon) => {
+        try {
+            const response = await fetch('https://localhost:7048/api/Coupons/CreateCoupon', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(newCoupon)
+                
+            });
+            if (response.ok) {
+                setCouponsData([...couponsData, newCoupon]); // update the table with new coupon
+                setCreateCoupon(false); //close the create coupon form
+                console.log("New coupon added to the table:", newCoupon);
+
+            } else {
+                console.error("Failed to create a new coupon");
+                const errorText = await response.text();
+                console.error("Error creating a new coupon:", errorText);
+                alert(errorText);
+
+            }
+        } catch (error) {
+            console.error("Error creating a new coupon:", error);
+        }
+    };
+
+    const handleSaveCouponClick = () => {
+        setCreateCoupon(true);
+    };
+
+    const handleCancelCreateCoupon = () => {
+        setCreateCoupon(false);
+    }
+
     return (
         <div>
             <div>
-            <Box px={4} pt={2}> 
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-               
-                <Box mt={2}> 
-                    <Button variant="outlined" onClick={handleLogout}>Logout</Button>
-                    <Box mt={1} fontSize="0.875rem">
-                        <Link to="/Register" style={{ textDecoration: 'none', color: 'blue' }}>
-                            Create new admin user
-                        </Link>
+                <Box px={4} pt={2}>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+
+                        <Box mt={2}>
+                            <Button variant="outlined" onClick={handleLogout}>Logout</Button>
+
+                        </Box>
+                    </Box>
+
+                    <h2 style={{ textAlign: 'center' }}>Welcome to coupons management! 👋🏻</h2>
+
+                    <Box display="flex" justifyContent="flex-end" gap={2} mt={2}>
+                        <Box mt={1} fontSize="0.875rem">
+                            <Link to="/Register" style={{ textDecoration: 'none', color: 'blue' }}>
+                                Create new admin user
+                            </Link>
+                        </Box>
+                        <Button variant="contained" onClick={handleSaveCouponClick}>Create Coupon</Button>
+                        <Button variant="contained">Report</Button>
                     </Box>
                 </Box>
-            </Box>
-
-            <h2 style={{ textAlign: 'center' }}>Welcome to coupons management! 👋🏻</h2>
-
-            <Box display="flex" justifyContent="flex-end" gap={2} mt={2}>
-                <Button variant="contained">Create Coupon</Button>
-                <Button>Report</Button>
-            </Box>
-        </Box>
-        </div>
+            </div>
 
             <br />    <br />
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 500 }} aria-label="user table">
+            <TableContainer component={Paper} sx={{ width: 1100, margin: 'auto', marginBottom: 6 }}>
+                <Table aria-label="user table">
                     <TableHead>
                         <TableRow>
                             <TableCell align="left">Coupon ID</TableCell>
@@ -244,10 +282,16 @@ export default function CouponsManage() {
                 </Table>
             </TableContainer>
             {editingCoupon && (
-                <EditCouponForm 
+                <EditCouponForm
                     coupon={editingCoupon}
                     onSave={handleSaveChanges}
                     onCancel={handleCloseEdit}
+                />
+            )}
+            {createCoupon && (
+                <CreateCoupon
+                    onSave={handleCreateNewCoupon}
+                    onCancel={handleCancelCreateCoupon}
                 />
             )}
         </div>

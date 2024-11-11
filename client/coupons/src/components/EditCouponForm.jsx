@@ -36,7 +36,7 @@ export default function EditCouponForm({ coupon, onSave, onCancel }) {
     }
 
     const handleDateChange = (e) => {
-        setSelectedDate(e.target.value); 
+        setSelectedDate(e.target.value);
     };
 
     return (
@@ -94,7 +94,7 @@ export default function EditCouponForm({ coupon, onSave, onCancel }) {
                 onChange={handleDateChange}
                 fullWidth
                 InputLabelProps={{
-                    shrink: true, // מקטין את הלייבל מעל לשדה התאריך
+                    shrink: true,
                 }}
             />
 
