@@ -108,7 +108,6 @@ export default function CreateCoupon({ onSave, onCancel }) {
                     value={newCoupon.expirationDate}
                     onChange={handleChange}
                     fullWidth
-                    InputLabelProps={{ shrink: true }}
                     margin="normal"
                 />
 

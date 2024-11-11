@@ -66,7 +66,12 @@ namespace CouponsManagement.Controllers
             _context.Coupons.Add(newCoupon);
             await _context.SaveChangesAsync();
 
-            return Ok("Created new coupon successfuly!");
+            //reload the full coupon object in order to return it
+            var createdCoupon = await _context.Coupons
+                .Where(c => c.CouponId == newCoupon.CouponId)
+                .FirstOrDefaultAsync();
+
+            return Ok(createdCoupon);
         }
 
         [HttpPatch("{couponId:int}")]

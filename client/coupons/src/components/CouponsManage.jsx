@@ -149,7 +149,8 @@ export default function CouponsManage() {
 
             });
             if (response.ok) {
-                setCouponsData([...couponsData, newCoupon]); // update the table with new coupon
+                const createdCoupon = await response.json();
+                setCouponsData([...couponsData, createdCoupon]); // update the table with new coupon
                 setCreateCoupon(false); //close the create coupon form
                 console.log("New coupon added to the table:", newCoupon);
 
@@ -252,6 +253,7 @@ export default function CouponsManage() {
                         </TabPanel>
                     </TabContext>
                 </Box>
+                <Button>Filter</Button>
             </div>
 
             <br />    <br />
@@ -299,7 +301,7 @@ export default function CouponsManage() {
 
                                 <TableCell align="left">
                                     <span>
-                                        {coupon.expirationDate ? dayjs(coupon.createdDate).locale('he').format('DD/MM/YYYY') : "No expiration date"}
+                                        {dayjs(coupon.createdDate).locale('he').format('DD/MM/YYYY')}
 
                                     </span>
                                 </TableCell>
@@ -315,7 +317,8 @@ export default function CouponsManage() {
                                 </TableCell>
                                 <TableCell align="left">
                                     <span>
-                                        {dayjs(coupon.expirationDate).locale('he').format('DD/MM/YYYY')}
+
+                                        {coupon.expirationDate ? dayjs(coupon.expirationDate).locale('he').format('DD/MM/YYYY') : "No expiration date"}
 
                                     </span>
                                 </TableCell>
