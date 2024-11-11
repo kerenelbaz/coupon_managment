@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import Login from './components/Login';
+import ApplyCoupon from './components/ApplyCoupon';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -13,11 +14,12 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {isLoggedIn ? (
-          <div>Admin Page</div>
+        {/* {isLoggedIn ? (
+          <h2>Admin Page</h2>
         ) : (
           <Login onLoginSuccess={handleLoginSuccess} />
-        )}
+        )} */}
+        <ApplyCoupon />
       </header>
     </div>
   );
