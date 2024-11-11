@@ -185,7 +185,9 @@ namespace CouponsManagement.Controllers
 
             HttpContext.Session.SetString("price", finalPrice.ToString());
 
-            return Ok($"Price after discount is:{finalPrice}");
+            //return Ok($"Price after discount is:{finalPrice}");
+            return Ok(new { finalPrice = finalPrice });
+
         }
 
 
@@ -268,6 +270,7 @@ namespace CouponsManagement.Controllers
 
 
         }
+
         [NonAction]
         private DataTable GetCouponsData() {
 
