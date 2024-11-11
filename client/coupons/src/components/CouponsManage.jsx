@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react';
 import EditCouponForm from './EditCouponForm';
@@ -17,6 +18,10 @@ import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import CreateCoupon from './CreateCoupon';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 
 
 export default function CouponsManage() {
@@ -24,6 +29,12 @@ export default function CouponsManage() {
     const [couponsData, setCouponsData] = useState([]);
     const [editingCoupon, setEditingCoupon] = useState(null); //usestate for the coupon who editing
     const [createCoupon, setCreateCoupon] = useState(false);
+    const [tabValue, setTabValue] = useState('1');
+
+    //use state for filtering the coupon data:
+    const [adminFilter, setAdminFilter] = useState('');
+    const [dateRange, setDateRange] = useState({ start: '', end: '' });
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -135,7 +146,7 @@ export default function CouponsManage() {
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify(newCoupon)
-                
+
             });
             if (response.ok) {
                 setCouponsData([...couponsData, newCoupon]); // update the table with new coupon
@@ -162,6 +173,24 @@ export default function CouponsManage() {
         setCreateCoupon(false);
     }
 
+    const handleTabChange = (event, newValue) => {
+        setTabValue(newValue);
+        setAdminFilter('');
+        setDateRange({ start: '', end: '' })
+    };
+
+    //applying the selected filter based the active tab value
+    const filteredCoupons = couponsData.filter(coupon => {
+        if (tabValue === '1' && adminFilter) {
+            return coupon.adminId === adminFilter;
+        }
+        if (tabValue === '2' && dateRange.start && dateRange.end) {
+            const couponDate = dayjs(coupon.createdDate);
+            return couponDate.isAfter(dateRange.start) && couponDate.isBefore(dateRange.end);
+        }
+        return true; //no filter applied
+    });
+
     return (
         <div>
             <div>
@@ -185,6 +214,43 @@ export default function CouponsManage() {
                         <Button variant="contained" onClick={handleSaveCouponClick}>Create Coupon</Button>
                         <Button variant="contained">Report</Button>
                     </Box>
+                </Box>
+            </div>
+            <div>
+                <Box sx={{ width: '100%', typography: 'body1', display: 'flex', flexDirection: 'column', m: 2 }}>
+                    <TabContext value={tabValue}>
+                        <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'flex-start' }}>
+                            <TabList onChange={handleTabChange} aria-label="lab API tabs example">
+                                <Tab label="Filter by Admin" value="1" />
+                                <Tab label="Filter by Date Range" value="2" />
+                            </TabList>
+                        </Box>
+                        <TabPanel value="1" sx={{ display: tabValue === '1' ? 'flex' : 'none', flexDirection: 'column', alignItems: 'flex-start', width: '50%' }}>
+                            <TextField
+                                label="Filter by Admin ID"
+                                value={adminFilter}
+                                onChange={(e) => setAdminFilter(e.target.value)}
+                                fullWidth
+                                sx={{ width: '50%' }}
+                            />
+                        </TabPanel>
+                        <TabPanel value="2" sx={{ display: tabValue === '2' ? 'flex' : 'none', flexDirection: 'column', alignItems: 'flex-start', width: '50%' }}>
+                            <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start', width: '100%' }}>
+                                <TextField
+                                    label="Start Date"
+                                    value={dateRange.start}
+                                    onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+                                    fullWidth
+                                />
+                                <TextField
+                                    label="End Date"
+                                    value={dateRange.end}
+                                    onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+                                    fullWidth
+                                />
+                            </Box>
+                        </TabPanel>
+                    </TabContext>
                 </Box>
             </div>
 
