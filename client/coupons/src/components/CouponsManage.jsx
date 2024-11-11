@@ -9,11 +9,17 @@ import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
+import Box from '@mui/material/Box';
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react';
+import EditCouponForm from './EditCouponForm';
+import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
+
 
 export default function CouponsManage() {
     const [couponsData, setCouponsData] = useState([]);
+    const [editingCoupon, setEditingCoupon] = useState(null); //usestate for the coupon who editing
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,39 +45,86 @@ export default function CouponsManage() {
         fetchData();
     }, []);
 
-    const handleDeleteRow = (username) => {
+    const handleDeleteRow = (couponId) => {
         console.log("Delete coupon");
 
     };
 
-    const handleEditUser = (user) => {
+    const handleEditUser = (coupon) => {
         console.log("Edit coupon");
+        setEditingCoupon(coupon);
     };
 
+    const handleCloseEdit = () => {
+        setCouponsData(null);
+    }
+
+    // send to the server the updated coupon
+    const handleSaveChanges = async (editedCoupon) => {
+        try {
+            const response = await fetch(`https://localhost:7048/api/Coupons/${editedCoupon.couponId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(editedCoupon)
+            });
+            if (response.ok) {
+                const updatedCoupons = couponsData.map(coupon =>
+                    coupon.couponId === editedCoupon.couponId ? editedCoupon : coupon
+                );
+                setCouponsData(updatedCoupons);
+            } else {
+                console.error("Failed to update coupon");
+            }
+        } catch (error) {
+            console.error("Error updating coupon:", error);
+        } finally {
+            setEditingCoupon(null); // close editing mode
+        }
+    }
 
     return (
         <div>
-            <h2>Welcome to coupons management! 👋🏻</h2><br />
+            <div>
+            <Box px={4} pt={2}> 
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+               
+                <Box mt={2}> 
+                    <Button variant="outlined">Logout</Button>
+                    <Box mt={1} fontSize="0.875rem">
+                        <Link to="/Register" style={{ textDecoration: 'none', color: 'blue' }}>
+                            Create new admin user
+                        </Link>
+                    </Box>
+                </Box>
+            </Box>
 
+            <h2 style={{ textAlign: 'center' }}>Welcome to coupons management! 👋🏻</h2>
 
-            {/* <Button variant="outlined" onClick={props.onLogout}>Logout</Button> */}
+            <Box display="flex" justifyContent="flex-end" gap={2} mt={2}>
+                <Button variant="contained">Create Coupon</Button>
+                <Button>Report</Button>
+            </Box>
+        </Box>
+        </div>
+
             <br />    <br />
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="user table">
+                <Table sx={{ minWidth: 500 }} aria-label="user table">
                     <TableHead>
                         <TableRow>
                             <TableCell align="left">Coupon ID</TableCell>
                             <TableCell align="left">Code</TableCell>
-                            <TableCell align="left">Is double promotion?</TableCell>
+                            <TableCell align="center">Is double promotion?</TableCell>
                             <TableCell align="left">Admin ID</TableCell>
-                            <TableCell align="right">Created date</TableCell>
-                            <TableCell align="right">Is precentage discount</TableCell>
-                            <TableCell align="right">Discount</TableCell>
-                            <TableCell align="right">Experation date</TableCell>
-                            <TableCell align="right">Max usages</TableCell>
-                            <TableCell align="right">Description</TableCell>
+                            <TableCell align="left">Created date</TableCell>
+                            <TableCell align="left">Is precentage discount</TableCell>
+                            <TableCell align="left">Discount</TableCell>
+                            <TableCell align="left">Experation date</TableCell>
+                            <TableCell align="center">Max usages</TableCell>
+                            <TableCell align="left">Description</TableCell>
 
-                            <TableCell align="right">Actions</TableCell>
+                            <TableCell align="left">Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -87,7 +140,7 @@ export default function CouponsManage() {
                                         {coupon.code}
                                     </span>
                                 </TableCell>
-                                <TableCell align="left">
+                                <TableCell align="center">
                                     <span>
                                         {coupon.isDoublePromotions ? "Yes" : "No"}
                                     </span>
@@ -109,31 +162,31 @@ export default function CouponsManage() {
                                         {coupon.isPercentageDiscount ? "Yes" : "No"}
                                     </span>
                                 </TableCell>
-                                <TableCell align="right">
+                                <TableCell align="left">
                                     <span>
                                         {coupon.discount}
                                     </span>
                                 </TableCell>
-                                <TableCell align="right">
+                                <TableCell align="left">
                                     <span>
                                         {dayjs(coupon.expirationDate).locale('he').format('DD/MM/YYYY')}
 
                                     </span>
                                 </TableCell>
 
-                                <TableCell align="right">
+                                <TableCell align="left">
                                     <span>
                                         {coupon.maxUsage != null ? coupon.maxUsage : "Unlimited"}
                                     </span>
                                 </TableCell>
 
-                                <TableCell align="right">
+                                <TableCell align="left">
                                     <span>
                                         {coupon.description}
                                     </span>
                                 </TableCell>
 
-                                <TableCell align="right">
+                                <TableCell align="center">
                                     <IconButton aria-label="edit" onClick={() => handleEditUser(coupon)}>
                                         <EditIcon />
                                     </IconButton>
@@ -148,7 +201,13 @@ export default function CouponsManage() {
                     </TableBody>
                 </Table>
             </TableContainer>
-
+            {editingCoupon && (
+                <EditCouponForm // רכיב העריכה
+                    coupon={editingCoupon}
+                    onSave={handleSaveChanges}
+                    onCancel={handleCloseEdit}
+                />
+            )}
         </div>
     );
 }
