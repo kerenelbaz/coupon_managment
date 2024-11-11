@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import TaskAlt from '@mui/icons-material/TaskAlt';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import { Link } from 'react-router-dom';
 
 import '../myStyle.css';
 
@@ -13,7 +14,8 @@ export default function Register() {
         password: ''
     })
     const [registerFailed, setRegisterFailed] = useState(false);
-    const [setErrorMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -36,23 +38,27 @@ export default function Register() {
                 },
                 body: JSON.stringify({
                     username, password
-
                 }),
+                credentials: 'include',
             });
             if (response.ok) {
                 setFormRegister({ username: '', password: '' })
                 setRegisterFailed(false)
                 setErrorMessage('');
+                setSuccessMessage('Admin created successfully!');
+
             }
             else {
                 setRegisterFailed(true)
                 const errorText = await response.text();
                 setErrorMessage(errorText)
+                setSuccessMessage('');
             }
         } catch (e) {
             console.log("Error during login:", e);
             setRegisterFailed(true);
             console.log("Error occurred, please try again later");
+            setSuccessMessage('');
         }
 
     }
@@ -60,7 +66,10 @@ export default function Register() {
 
     return (
         <div>
-            <h2>Login</h2>
+            <Link to="/coupon-management" style={{ textDecoration: 'none', color: 'blue', fontSize:'1.2rem'}}>
+                back to coupon management
+            </Link>
+            <h2>Create new  admin</h2>
             <form onSubmit={handleSubmit}>
                 <div className='field-container'>
                     <TextField
@@ -89,7 +98,13 @@ export default function Register() {
             {registerFailed && (
                 <Alert severity="error">
                     <AlertTitle>Error</AlertTitle>
-                    Incorrect use rname or password.
+                    {errorMessage || "Error occurred while creating new admin"}
+                </Alert>
+            )}
+            {successMessage && (
+                <Alert severity="success">
+                    <AlertTitle>Success</AlertTitle>
+                    {successMessage}
                 </Alert>
             )}
 
