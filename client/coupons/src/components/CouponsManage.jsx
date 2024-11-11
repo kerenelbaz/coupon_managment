@@ -15,9 +15,11 @@ import { useEffect, useState } from 'react';
 import EditCouponForm from './EditCouponForm';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function CouponsManage() {
+    const navigate = useNavigate();
     const [couponsData, setCouponsData] = useState([]);
     const [editingCoupon, setEditingCoupon] = useState(null); //usestate for the coupon who editing
 
@@ -45,18 +47,13 @@ export default function CouponsManage() {
         fetchData();
     }, []);
 
-    const handleDeleteRow = (couponId) => {
-        console.log("Delete coupon");
-
-    };
-
-    const handleEditUser = (coupon) => {
+    const handleEditCoupon = (coupon) => {
         console.log("Edit coupon");
         setEditingCoupon(coupon);
     };
 
     const handleCloseEdit = () => {
-        setCouponsData(null);
+        setEditingCoupon(null);
     }
 
     // send to the server the updated coupon
@@ -83,6 +80,51 @@ export default function CouponsManage() {
         }
     }
 
+    // handle logout admin user 
+    const handleLogout = async () => {
+        try{const response = await fetch('https://localhost:7048/api/Admins/Logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+            }),
+            credentials: 'include'
+        });
+        if (response.ok) {
+            console.log("Login successful")
+            navigate('/');
+        }
+        else {
+            console.log('Logout failed');
+        }
+    } catch (e) {
+        console.log("Error during logout:", e);
+    }
+    }
+
+    const handleDeleteCoupon = async (couponId)=>{
+        console.log(couponId)
+        try {
+            const response = await fetch(`https://localhost:7048/api/Coupons/${couponId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include'
+            });
+    
+            if (response.ok) {
+                // filter out the deleted coupon from the local state
+                const updatedCoupons = couponsData.filter(coupon => coupon.couponId !== couponId);
+                setCouponsData(updatedCoupons);
+                console.log("Coupon deleted successfully");
+            } else {
+                console.error("Failed to delete coupon");
+            }
+        } catch (error) {
+            console.error("Error deleting coupon:", error);
+        }
+    }
+
     return (
         <div>
             <div>
@@ -90,7 +132,7 @@ export default function CouponsManage() {
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                
                 <Box mt={2}> 
-                    <Button variant="outlined">Logout</Button>
+                    <Button variant="outlined" onClick={handleLogout}>Logout</Button>
                     <Box mt={1} fontSize="0.875rem">
                         <Link to="/Register" style={{ textDecoration: 'none', color: 'blue' }}>
                             Create new admin user
@@ -187,10 +229,10 @@ export default function CouponsManage() {
                                 </TableCell>
 
                                 <TableCell align="center">
-                                    <IconButton aria-label="edit" onClick={() => handleEditUser(coupon)}>
+                                    <IconButton aria-label="edit" onClick={() => handleEditCoupon(coupon)}>
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton aria-label="delete" onClick={() => handleDeleteRow(coupon.CouponId)}>
+                                    <IconButton aria-label="delete" onClick={() => handleDeleteCoupon(coupon.couponId)}>
                                         <DeleteIcon />
                                     </IconButton>
 
@@ -202,7 +244,7 @@ export default function CouponsManage() {
                 </Table>
             </TableContainer>
             {editingCoupon && (
-                <EditCouponForm // רכיב העריכה
+                <EditCouponForm 
                     coupon={editingCoupon}
                     onSave={handleSaveChanges}
                     onCancel={handleCloseEdit}
