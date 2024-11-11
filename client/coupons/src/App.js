@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import Login from './components/Login';
 import ApplyCoupon from './components/ApplyCoupon';
+import CouponsManage from './components/CouponsManage';
 
 function App() {
 
@@ -24,6 +25,8 @@ function App() {
         <Routes>
           <Route path="/" element={<ApplyCoupon />} />
           <Route path="/Login" element={<Login />} />
+          <Route path="/coupon-management" element={<CouponsManage />} />
+
         </Routes>
       </header>
     </div>

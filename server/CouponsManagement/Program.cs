@@ -30,6 +30,8 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.None; 
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
 });
 builder.Services.AddControllersWithViews();
 
@@ -52,10 +54,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseSession();
+
+
 
 app.UseCors(MyAllowSpecificOrigins);
+
+app.UseSession();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

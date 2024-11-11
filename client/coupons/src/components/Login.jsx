@@ -5,10 +5,12 @@ import TaskAlt from '@mui/icons-material/TaskAlt';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import '../myStyle.css';
 
 export default function Login({ onLoginSuccess }) {
+    const navigate = useNavigate();
 
     const [formLogin, setFormLogin] = useState({
         username: '',
@@ -39,12 +41,13 @@ export default function Login({ onLoginSuccess }) {
                 body: JSON.stringify({
                     username, password
                 }),
+                credentials: 'include'
             });
             if (response.ok) {
                 console.log("Login successful")
                 setFormLogin({ username: '', password: '' })
                 setLoginFailed(false)
-                onLoginSuccess(); //direct to admin page
+                navigate('/coupon-management');
             }
             else {
                 setLoginFailed(true)
