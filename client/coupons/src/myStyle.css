@@ -1,0 +1,13 @@
+.field-container {
+    margin-bottom: 10px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.field-input {
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 20px;
+}
