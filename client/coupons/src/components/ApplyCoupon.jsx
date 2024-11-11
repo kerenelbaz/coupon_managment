@@ -3,6 +3,9 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+// import Link from '@mui/material/Link';
+import { Link } from 'react-router-dom';
+
 
 
 export default function ApplyCoupon() {
@@ -13,7 +16,7 @@ export default function ApplyCoupon() {
     })
 
     const [applyCodeFailed, setApplyCodeFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [setErrorMessage] = useState('');
 
 
     const handleChange = (e) => {
@@ -48,7 +51,7 @@ export default function ApplyCoupon() {
             else {
                 setApplyCodeFailed(true)
                 const errorText = await response.text();
-                setApplyCodeFailed(errorText)
+                setErrorMessage(errorText)
             }
         } catch (e) {
             console.log("Error during application:", e);
@@ -64,6 +67,9 @@ export default function ApplyCoupon() {
     return (
         <>
             <h2>Use your coupons</h2>
+            <Link to="/Login">
+                {'Click here to connect to your admin account'}
+            </Link>
             <div>
                 <h3>Your total price is:</h3>
                 <div className='field-container'>

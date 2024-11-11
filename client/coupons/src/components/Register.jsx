@@ -4,22 +4,20 @@ import Button from '@mui/material/Button';
 import TaskAlt from '@mui/icons-material/TaskAlt';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import { Link } from 'react-router-dom';
 
 import '../myStyle.css';
 
-export default function Login({ onLoginSuccess }) {
-
-    const [formLogin, setFormLogin] = useState({
+export default function Register() {
+    const [formRegister, setFormRegister] = useState({
         username: '',
         password: ''
     })
-
-    const [loginFailed, setLoginFailed] = useState(false); //use state hook for unsucceeded login
+    const [registerFailed, setRegisterFailed] = useState(false);
+    const [setErrorMessage] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormLogin(prevState => ({
+        setFormRegister(prevState => ({
             ...prevState,
             [name]: value
         }));
@@ -27,32 +25,33 @@ export default function Login({ onLoginSuccess }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // prevent default form submission
-        let username = formLogin.username;
-        let password = formLogin.password;
+        let username = formRegister.username;
+        let password = formRegister.password;
 
         try {
-            const response = await fetch('https://localhost:7048/api/Admins/login', {
+            const response = await fetch('https://localhost:7048/api/Admins/Register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     username, password
+
                 }),
             });
             if (response.ok) {
-                console.log("Login successful")
-                setFormLogin({ username: '', password: '' })
-                setLoginFailed(false)
-                onLoginSuccess(); //direct to admin page
+                setFormRegister({ username: '', password: '' })
+                setRegisterFailed(false)
+                setErrorMessage('');
             }
             else {
-                setLoginFailed(true)
-                console.log('Login failed, please check your username and password')
+                setRegisterFailed(true)
+                const errorText = await response.text();
+                setErrorMessage(errorText)
             }
         } catch (e) {
             console.log("Error during login:", e);
-            setLoginFailed(true);
+            setRegisterFailed(true);
             console.log("Error occurred, please try again later");
         }
 
@@ -86,11 +85,8 @@ export default function Login({ onLoginSuccess }) {
                 <div>
                     <Button type="submit" variant="contained" endIcon={<TaskAlt />}>Send</Button>
                 </div>
-                <Link to="/">
-                    {'Go back to apply coupons'}
-                </Link>
             </form>
-            {loginFailed && (
+            {registerFailed && (
                 <Alert severity="error">
                     <AlertTitle>Error</AlertTitle>
                     Incorrect use rname or password.
