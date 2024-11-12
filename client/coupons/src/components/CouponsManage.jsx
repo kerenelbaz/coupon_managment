@@ -46,7 +46,8 @@ export default function CouponsManage() {
 
                 });
                 if (!response.ok) {
-                    throw new Error('Failed to fetch data');
+                    alert("please reconnect you admin account")
+                    navigate('/Login');
                 }
                 const responseData = await response.json();
                 setCouponsData(responseData);
