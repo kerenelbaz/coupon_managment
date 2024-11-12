@@ -4,18 +4,17 @@ import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { Link } from 'react-router-dom';
-
+import Box from '@mui/material/Box';
 
 
 export default function ApplyCoupon() {
     const [couponProperties, setCouponProperties] = useState({
-        // price: '',
         code: '',
         finalPrice: ''
     })
 
     const [applyCodeFailed, setApplyCodeFailed] = useState(false);
-    const [setErrorMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
 
     const handleChange = (e) => {
@@ -26,11 +25,8 @@ export default function ApplyCoupon() {
         }));
     }
 
-
-    const handleApplyCoupon = async (e) => {
-        // e.preventDefault(); // prevent default form submission
+    const handleApplyCoupon = async () => {
         let code = couponProperties.code;
-        //let finalPrice = couponProperties.finalPrice;
 
         try {
             const response = await fetch('https://localhost:7048/api/Coupons/apply-coupon', {
@@ -50,6 +46,7 @@ export default function ApplyCoupon() {
             else {
                 setApplyCodeFailed(true)
                 const errorText = await response.text();
+                console.log("Error response text:", errorText);
                 setErrorMessage(errorText)
             }
         } catch (e) {
@@ -61,14 +58,14 @@ export default function ApplyCoupon() {
 
     }
 
-
-
     return (
         <>
             <h2>Use your coupons</h2>
-            <Link to="/Login">
-                {'Click here to connect to your admin account'}
-            </Link>
+
+            <br /><br /><br />
+
+
+
             <div>
                 <h3>Your total price is:</h3>
                 <div className='field-container'>
@@ -95,10 +92,17 @@ export default function ApplyCoupon() {
                     }}
                 />
             </div>
+            <br /> <br />
+            <Box mt={1} fontSize="1.1rem">
+                <Link to="/Login" style={{ textDecoration: 'none', color: '#1876d2' }}>
+                    {'Click here to login your admin account'}
+                </Link>
+            </Box>
+            <br />
             {applyCodeFailed && (
                 <Alert severity="error">
                     <AlertTitle>Error</AlertTitle>
-                    {applyCodeFailed || "Error occurred while applying coupon code."}
+                    {errorMessage || "Error occurred while applying coupon code."}
                 </Alert>
             )}
         </>

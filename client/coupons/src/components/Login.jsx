@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 import '../myStyle.css';
 
-export default function Login({ onLoginSuccess }) {
+export default function Login() {
     const navigate = useNavigate();
 
     const [formLogin, setFormLogin] = useState({
