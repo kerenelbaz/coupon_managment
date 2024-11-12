@@ -11,7 +11,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("https://coupon-management-gf1k.vercel.app").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+            // policy.WithOrigins("https://coupon-managment-gf1k.vercel.app").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+            policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
         });
 });
 
@@ -28,6 +29,7 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
+    //options.Cookie.Domain=("coupon-managment-gf1k.vercel.app");
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
     options.Cookie.SameSite = SameSiteMode.None; 
