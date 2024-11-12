@@ -88,7 +88,7 @@ namespace CouponsManagement.Controllers
         /// </summary>
         /// <param name="couponId">CouponIDd/param>
         /// <param name="req">rquest body contain the coupon's parameters that need to be update</param>
-        /// <returns></returns>
+        /// <returns>JSON based message success or error messages</returns>
         [HttpPatch("{couponId:int}")]
         public IActionResult EditCoupon(int couponId, [FromBody] EditCoupon req)
         {
@@ -100,7 +100,7 @@ namespace CouponsManagement.Controllers
             var couponEdit = _context.Coupons.SingleOrDefault(c =>
             c.CouponId == couponId);
             if (couponEdit == null)
-                return BadRequest(new { message = "Coupon not found" });
+                return BadRequest(new { message = "Couldn't find the coupon by coupon ID" });
 
             // Check update coupon code uniqness 
             if (!String.IsNullOrEmpty(req.Code) && req.Code != couponEdit.Code)
@@ -140,6 +140,7 @@ namespace CouponsManagement.Controllers
         /// Delete a coupon by coupon ID
         /// </summary>
         /// <param name="couponId">CouponId</param>
+        /// /// <returns>JSON based message success or error messages</returns>
         [HttpDelete("{couponId:int}")]
         public IActionResult DeleteCoupon(int couponId)
         {
