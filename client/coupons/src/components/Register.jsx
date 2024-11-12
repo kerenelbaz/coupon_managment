@@ -53,17 +53,16 @@ export default function Register() {
                 }),
                 credentials: 'include',
             });
+            const result = await response.json();
             if (response.ok) {
                 setFormRegister({ username: '', password: '' })
                 setRegisterFailed(false)
                 setErrorMessage('');
-                setSuccessMessage('Admin created successfully!');
-
+                setSuccessMessage(result.message || 'Admin created successfully!');
             }
             else {
                 setRegisterFailed(true)
-                const errorText = await response.text();
-                setErrorMessage(errorText)
+                setErrorMessage(result.message)
                 setSuccessMessage('');
             }
         } catch (e) {

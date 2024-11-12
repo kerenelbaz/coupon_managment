@@ -46,6 +46,7 @@ export default function ApplyCoupon() {
                 body: JSON.stringify(code),
                 credentials: 'include',
             });
+
             if (response.ok) {
                 const data = await response.json();
                 setCouponProperties(prevState => ({ ...prevState, finalPrice: data.finalPrice }))
@@ -53,16 +54,13 @@ export default function ApplyCoupon() {
                 setErrorMessage('');
             }
             else {
+                const errorData = await response.json();
                 setApplyCodeFailed(true)
-                const errorText = await response.text();
-                console.log("Error response text:", errorText);
-                setErrorMessage(errorText) // set the error message from the server
+                setErrorMessage(errorData.message) // set the error message from the server
             }
         } catch (e) {
             console.log("Error during application:", e);
             setApplyCodeFailed(true);
-            setErrorMessage("Error occurred, please try again later");
-
         }
 
     }

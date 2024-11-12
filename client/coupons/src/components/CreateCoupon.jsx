@@ -107,13 +107,14 @@ export default function CreateCoupon({ onSave, onCancel }) {
                 <TextField
                     label="Discount"
                     name="discount"
+                    type='number'
                     value={newCoupon.discount}
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
                     required
                     error={newCoupon.discount === ''}
-                    helperText={newCoupon.discount === '' && "Required"}
+                    helperText={newCoupon.discount === '' && "Required number only"}
                 />
 
                 <TextField
@@ -128,6 +129,7 @@ export default function CreateCoupon({ onSave, onCancel }) {
                 <TextField
                     label="Max Usage"
                     name="maxUsage"
+                    type='number'
                     value={newCoupon.maxUsage}
                     onChange={handleChange}
                     fullWidth

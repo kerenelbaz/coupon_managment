@@ -23,7 +23,7 @@ export default function Login() {
     })
 
     const [loginFailed, setLoginFailed] = useState(false); //sate to track unsucceeded login
-
+    const [errorMessage, setErrorMessage] = useState('');
     /**
     * handle changes on inpute fields
     * @param {event} e - event that contains the changes about the input values
@@ -58,20 +58,20 @@ export default function Login() {
                 }),
                 credentials: 'include'
             });
+            const result = await response.json();
             if (response.ok) {
-                console.log("Login successful")
                 setFormLogin({ username: '', password: '' })
                 setLoginFailed(false)
                 navigate('/coupon-management');
             }
             else {
                 setLoginFailed(true)
-                console.log('Login failed, please check your username and password')
+                setErrorMessage(result.message || 'Login failed, please check your username and password');
             }
         } catch (e) {
             console.log("Error during login:", e);
             setLoginFailed(true);
-            console.log("Error occurred, please try again later");
+            setErrorMessage("Error occurred, please try again later");
         }
 
     }
@@ -115,7 +115,7 @@ export default function Login() {
             {loginFailed && (
                 <Alert severity="error">
                     <AlertTitle>Error</AlertTitle>
-                    Incorrect use rname or password.
+                    {errorMessage || "Incorrect username or password."}
                 </Alert>
             )}
 

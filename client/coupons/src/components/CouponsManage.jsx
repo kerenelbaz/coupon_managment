@@ -81,7 +81,6 @@ export default function CouponsManage() {
      * @param {Object} coupon - The coupon data that need to edit
      */
     const handleEditCoupon = (coupon) => {
-        console.log("Edit coupon");
         setEditingCoupon(coupon);
     };
 
@@ -95,7 +94,7 @@ export default function CouponsManage() {
     // send to the server the updated coupon - save changes to a coupon after editing
 
     /**
-     * save changes to an editated coupon by sending PATCH request to the server. And update the coupons local list @couponsData
+     * save changes to an editated coupon by sending PATCH api request to the server. And update the coupons local list @couponsData
      * @param {Object} editedCoupon - the edited coupon
      */
     const handleSaveChanges = async (editedCoupon) => {
@@ -111,13 +110,13 @@ export default function CouponsManage() {
                     coupon.couponId === editedCoupon.couponId ? editedCoupon : coupon
                 );
                 setCouponsData(updatedCoupons);
+                setEditingCoupon(null); //clsing the editing coupon form
             } else {
-                console.error("Failed to update coupon");
+                const errorData = await response.json();
+                alert(errorData.message);
             }
         } catch (error) {
             console.error("Error updating coupon:", error);
-        } finally {
-            setEditingCoupon(null);
         }
     }
 
@@ -136,7 +135,6 @@ export default function CouponsManage() {
                 credentials: 'include'
             });
             if (response.ok) {
-                console.log("Login successful")
                 navigate('/'); //redirect to homepage
             }
             else {
@@ -152,7 +150,6 @@ export default function CouponsManage() {
      * @param {number} couponId - the ID of the coupon to delete
      */
     const handleDeleteCoupon = async (couponId) => {
-        console.log(couponId)
         try {
             const response = await fetch(`https://localhost:7048/api/Coupons/${couponId}`, {
                 method: 'DELETE',
@@ -164,7 +161,6 @@ export default function CouponsManage() {
                 // filter out the deleted coupon from the local state
                 const updatedCoupons = couponsData.filter(coupon => coupon.couponId !== couponId);
                 setCouponsData(updatedCoupons);
-                console.log("Coupon deleted successfully");
             } else {
                 console.error("Failed to delete coupon");
             }
@@ -190,14 +186,11 @@ export default function CouponsManage() {
                 const createdCoupon = await response.json();
                 setCouponsData([...couponsData, createdCoupon]);
                 setCreateCoupon(false);
-                console.log("New coupon added to the table:", newCoupon);
 
             } else {
-                console.error("Failed to create a new coupon");
-                const errorText = await response.text();
-                console.error("Error creating a new coupon:", errorText);
+                const responseData = await response.json();
+                const errorText = responseData.message;
                 alert(errorText);
-
             }
         } catch (error) {
             console.error("Error creating a new coupon:", error);
@@ -244,21 +237,17 @@ export default function CouponsManage() {
                         'Content-Type': 'application/json'
                     }
                 });
-
+                const filteredCoupons = await response.json();
                 if (response.ok) {
-                    const filteredCoupons = await response.json();
                     setCouponsData(filteredCoupons);
-                    console.log("Filtered coupons:", filteredCoupons);
                 }
                 else {
-                    console.error("Failed to filter coupons");
-                    const errorText = await response.text();
-                    console.error("Error fetching filtered coupons:", errorText);
+                    const errorText = filteredCoupons.message;
                     alert(errorText);
                 }
             } catch (error) {
                 console.error("Error fetching filtered coupons:", error);
-                alert(error.response?.data || "An error occurred while fetching coupons");
+
             }
         }
     };
@@ -278,20 +267,15 @@ export default function CouponsManage() {
                         'Content-Type': 'application/json'
                     }
                 });
-
+                const responseData = await response.json();
                 if (response.ok) {
-                    const filteredCoupons = await response.json();
-                    setCouponsData(filteredCoupons);
-                    console.log("Filtered coupons by admin:", filteredCoupons);
+                    setCouponsData(responseData);
                 } else {
-                    console.error("Failed to filter coupons by admin");
-                    const errorText = await response.text();
-                    console.error("Error fetching filtered coupons:", errorText);
+                    const errorText = responseData.message;
                     alert(errorText);
                 }
             } catch (error) {
                 console.error("Error fetching filtered coupons:", error);
-                alert("An error occurred while fetching coupons by admin");
             }
         }
     };
@@ -313,7 +297,6 @@ export default function CouponsManage() {
                 // clear the filter fields:
                 setAdminFilter('');
                 setDateRange({ start: '', end: '' });
-                console.log("Filters reset, showing all coupons:", allCoupons);
             } else {
                 console.error("Failed to fetch all coupons");
             }
