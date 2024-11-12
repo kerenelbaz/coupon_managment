@@ -6,17 +6,24 @@ import AlertTitle from '@mui/material/AlertTitle';
 import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 
-
+/**
+ * ApplyCoupon component
+ * this component allows users to apply a coupon code to get discount.
+ * it displays the final price
+ */
 export default function ApplyCoupon() {
     const [couponProperties, setCouponProperties] = useState({
         code: '',
         finalPrice: ''
     })
 
-    const [applyCodeFailed, setApplyCodeFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [applyCodeFailed, setApplyCodeFailed] = useState(false); //state to track if coupon application failed
+    const [errorMessage, setErrorMessage] = useState(''); //state to mange the error message from the server
 
-
+    /**
+     * handle changes to the input fields and update the couponProperties state
+     * @param {Event} e - event conatining information about the input change
+     */
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCouponProperties(prevState => ({
@@ -24,7 +31,9 @@ export default function ApplyCoupon() {
             [name]: value
         }));
     }
-
+    /**
+     * send the coupon code to the server to apply the discount and update the final price.
+     */
     const handleApplyCoupon = async () => {
         let code = couponProperties.code;
 
@@ -47,7 +56,7 @@ export default function ApplyCoupon() {
                 setApplyCodeFailed(true)
                 const errorText = await response.text();
                 console.log("Error response text:", errorText);
-                setErrorMessage(errorText)
+                setErrorMessage(errorText) // set the error message from the server
             }
         } catch (e) {
             console.log("Error during application:", e);
@@ -102,7 +111,7 @@ export default function ApplyCoupon() {
             {applyCodeFailed && (
                 <Alert severity="error">
                     <AlertTitle>Error</AlertTitle>
-                    {errorMessage || "Error occurred while applying coupon code."}
+                    {errorMessage || "Error occurred while applying coupon code."} {/*present the error message from the server if there is*/}
                 </Alert>
             )}
         </>

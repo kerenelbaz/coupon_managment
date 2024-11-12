@@ -8,15 +8,23 @@ import { Link } from 'react-router-dom';
 
 import '../myStyle.css';
 
+/**
+ * Register component
+ * this component provide admins to create new admin users
+ */
 export default function Register() {
     const [formRegister, setFormRegister] = useState({
         username: '',
         password: ''
     })
-    const [registerFailed, setRegisterFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+    const [registerFailed, setRegisterFailed] = useState(false); //sate to track unsucceeded registration
+    const [errorMessage, setErrorMessage] = useState(''); //state to store error message from the server
+    const [successMessage, setSuccessMessage] = useState(''); //state to store success message from the server
 
+    /**
+     * handle the changes to the form fields and updating the formRegister state
+     * @param {object} e - the event object  
+     */
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormRegister(prevState => ({
@@ -25,6 +33,10 @@ export default function Register() {
         }));
     }
 
+    /**
+     * handles the form submission by sending the data to the server
+     * @param {object} e - the event object to prevent default
+     */
     const handleSubmit = async (e) => {
         e.preventDefault(); // prevent default form submission
         let username = formRegister.username;
@@ -55,7 +67,7 @@ export default function Register() {
                 setSuccessMessage('');
             }
         } catch (e) {
-            console.log("Error during login:", e);
+            console.log("Error during Register:", e);
             setRegisterFailed(true);
             console.log("Error occurred, please try again later");
             setSuccessMessage('');
@@ -66,7 +78,7 @@ export default function Register() {
 
     return (
         <div>
-            <Link to="/coupon-management" style={{ textDecoration: 'none', color: 'blue', fontSize:'1.2rem'}}>
+            <Link to="/coupon-management" style={{ textDecoration: 'none', color: 'blue', fontSize: '1.2rem' }}>
                 back to coupon management
             </Link>
             <h2>Create new  admin</h2>

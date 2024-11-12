@@ -6,12 +6,20 @@ import dayjs from 'dayjs';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+/**
+ * EditCouponForm omponent
+ * component for renders a form to edit an existing coupon
+ * @param {object} props - component props
+ * @param {object} props.coupon - the couopn that need to be edited
+ * @param {funciton} props.onSave - function to save the updated coupon
+ * @param {funciton} props.onCancel - function to cancel changes
+ */
 export default function EditCouponForm({ coupon, onSave, onCancel }) {
     const [selectedDate, setSelectedDate] = useState('');
 
     const [editedCoupon, setEditedCoupon] = useState({
         ...coupon,
-        // handle default values
+        // default values
         code: coupon.code || '',
         isDoublePromotions: coupon.isDoublePromotions ?? false,
         description: coupon.description || '',
@@ -21,20 +29,31 @@ export default function EditCouponForm({ coupon, onSave, onCancel }) {
         maxUsage: coupon.maxUsage ?? 0
     });
 
+    /**
+     * handle the chnages to the form inputs and updating the editedCoupon state with the entered values
+     * @param {event} e - event that contains the changes about the input values
+     */
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setEditedCoupon(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     };
 
+    /**
+     * prepare the updated coupon data for saving it to the server
+     */
     const handleSave = () => {
         // convert dayjs date back to standard date format before saving
         const updatedCoupon = {
             ...editedCoupon,
             expirationDate: editedCoupon.expirationDate ? editedCoupon.expirationDate.toISOString() : null
         };
-        onSave(updatedCoupon); //calling onSave in CouponsMange.jsx
+        onSave(updatedCoupon); //calling onSave function from the parent component - CouponsMange.jsx
     }
 
+    /**
+     * handle changes to expiration date
+     * @param {event} e - event that contains the changes about the input values
+     */
     const handleDateChange = (e) => {
         setSelectedDate(e.target.value);
     };

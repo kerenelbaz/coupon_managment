@@ -6,7 +6,13 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 
-
+/**
+ * CreateCoupon component
+ * render a form to create a new coupon
+ * @param {object} props - component props
+ * @param {function} props.onSave - function to save a new coupon
+ * @param {function} props.onCancel - function to cancel the create coupon
+ */
 export default function CreateCoupon({ onSave, onCancel }) {
     const [error, setError] = useState(null);
     const [newCoupon, setNewCoupon] = useState({
@@ -18,7 +24,10 @@ export default function CreateCoupon({ onSave, onCancel }) {
         expirationDate: null,
         maxUsage: ''
     });
-
+    /**
+     * handle the changes to the form fields and updating the newCoupon state
+     * @param {object} e - the event object  
+     */
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setNewCoupon(prev => ({
@@ -27,8 +36,13 @@ export default function CreateCoupon({ onSave, onCancel }) {
         }));
     };
 
+    /**
+     * handle the validation of the required fields - code, description and discount.
+     * if the validation fails, sets an error message. 
+     * else its prepare the new coupon data for saving.
+     */
     const handleSave = () => {
-        //checking required fields to be filled
+        //checking if the required fields are filled
         if (!newCoupon.code || !newCoupon.description || !newCoupon.discount === '') {
             setError("Please fill in all required fields.");
             return;
@@ -38,9 +52,9 @@ export default function CreateCoupon({ onSave, onCancel }) {
         const c = {
             ...newCoupon,
             expirationDate: newCoupon.expirationDate || null,
-            maxUsage: newCoupon.maxUsage === '' ? null : Number(newCoupon.maxUsage) 
+            maxUsage: newCoupon.maxUsage === '' ? null : Number(newCoupon.maxUsage)
         }
-        onSave(c);
+        onSave(c); //pass the newCoupon to parent component
     };
 
     return (

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TaskAlt from '@mui/icons-material/TaskAlt';
 import Alert from '@mui/material/Alert';
@@ -9,6 +10,10 @@ import { useNavigate } from 'react-router-dom';
 
 import '../myStyle.css';
 
+/**
+ * Login component
+ * this component provide login form for admin users, once the user is logged he redirect to coponsManagement component
+ */
 export default function Login() {
     const navigate = useNavigate();
 
@@ -17,8 +22,12 @@ export default function Login() {
         password: ''
     })
 
-    const [loginFailed, setLoginFailed] = useState(false); //use state hook for unsucceeded login
+    const [loginFailed, setLoginFailed] = useState(false); //sate to track unsucceeded login
 
+    /**
+    * handle changes on inpute fields
+    * @param {event} e - event that contains the changes about the input values
+    */
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormLogin(prevState => ({
@@ -27,6 +36,12 @@ export default function Login() {
         }));
     }
 
+    /**
+     * handles form submittion by sending the login credentials to the server, 
+     * if login is successful - navigates to the coupon management page
+     * else - display error message
+     * @param {object} e - event to prevent default behaviour
+     */
     const handleSubmit = async (e) => {
         e.preventDefault(); // prevent default form submission
         let username = formLogin.username;
@@ -89,9 +104,13 @@ export default function Login() {
                 <div>
                     <Button type="submit" variant="contained" endIcon={<TaskAlt />}>Send</Button>
                 </div>
-                <Link to="/">
-                    {'Go back to apply coupons'}
-                </Link>
+                <br />
+                <Box mt={2} fontSize="1.1rem">
+                    <Link to="/" style={{ textDecoration: 'none', color: '#1876d2' }}>
+                        {'Go back to apply coupons'}
+                    </Link>
+                </Box>
+                <br />
             </form>
             {loginFailed && (
                 <Alert severity="error">
