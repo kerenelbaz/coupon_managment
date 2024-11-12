@@ -22,6 +22,7 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import DownloadIcon from '@mui/icons-material/Download';
 
 
 export default function CouponsManage() {
@@ -181,18 +182,6 @@ export default function CouponsManage() {
         setDateRange({ start: '', end: '' })
     };
 
-    //applying the selected filter based the active tab value
-    // const filteredCoupons = couponsData.filter(coupon => {
-    //     if (tabValue === '1' && adminFilter) {
-    //         return coupon.adminId === adminFilter;
-    //     }
-    //     if (tabValue === '2' && dateRange.start && dateRange.end) {
-    //         const couponDate = dayjs(coupon.createdDate);
-    //         return couponDate.isAfter(dateRange.start) && couponDate.isBefore(dateRange.end);
-    //     }
-    //     return true; //no filter applied
-    // });
-
     // handle filtering by date range
     const handleFilterByDateRange = async () => {
         if (tabValue === '2' && dateRange.start && dateRange.end) {
@@ -226,10 +215,10 @@ export default function CouponsManage() {
     };
 
     const handleFilterByAdmin = async () => {
-        if (tabValue === '1' && adminFilter) { 
+        if (tabValue === '1' && adminFilter) {
             try {
                 const apiURL = `https://localhost:7048/api/Coupons/CouponByAdmin/${adminFilter}`;
-                
+
                 const response = await fetch(apiURL, {
                     method: 'GET',
                     credentials: 'include',
@@ -237,10 +226,10 @@ export default function CouponsManage() {
                         'Content-Type': 'application/json'
                     }
                 });
-    
+
                 if (response.ok) {
-                    const filteredCoupons = await response.json(); 
-                    setCouponsData(filteredCoupons); 
+                    const filteredCoupons = await response.json();
+                    setCouponsData(filteredCoupons);
                     console.log("Filtered coupons by admin:", filteredCoupons);
                 } else {
                     console.error("Failed to filter coupons by admin");
@@ -255,6 +244,8 @@ export default function CouponsManage() {
         }
     };
 
+
+
     // function for reset the table filter
     const handleResetFilters = async () => {
         try {
@@ -263,13 +254,13 @@ export default function CouponsManage() {
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include'
             });
-    
+
             if (response.ok) {
                 const allCoupons = await response.json();
                 setCouponsData(allCoupons); // reset to show all coupons
-                
+
                 // clear the filter fields:
-                setAdminFilter('');       
+                setAdminFilter('');
                 setDateRange({ start: '', end: '' });
                 console.log("Filters reset, showing all coupons:", allCoupons);
             } else {
@@ -279,7 +270,34 @@ export default function CouponsManage() {
             console.error("Error resetting filters:", error);
         }
     };
-    
+
+
+    const handleExportToExcelClick = async () => {
+        try {
+            const response = await fetch('https://localhost:7048/api/Coupons/ExportExcel', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'Coupons Report.xlsx'
+                link.click();
+                URL.revokeObjectURL(url);
+            }
+            else {
+                console.error("Failed to export excel file");
+            }
+        } catch (error) {
+            console.error("Error export file:", error);
+        }
+    }
 
 
     return (
@@ -303,7 +321,8 @@ export default function CouponsManage() {
                             </Link>
                         </Box>
                         <Button variant="contained" onClick={handleSaveCouponClick}>Create Coupon</Button>
-                        <Button variant="contained">Report</Button>
+                        <Button variant="contained" endIcon={<DownloadIcon />} onClick={handleExportToExcelClick}>Excel </Button>
+
                     </Box>
                 </Box>
             </div>
