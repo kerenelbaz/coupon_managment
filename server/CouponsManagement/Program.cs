@@ -11,7 +11,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+            policy.WithOrigins("https://coupon-management-gf1k.vercel.app").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
         });
 });
 
