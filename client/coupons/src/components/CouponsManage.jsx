@@ -181,16 +181,105 @@ export default function CouponsManage() {
     };
 
     //applying the selected filter based the active tab value
-    const filteredCoupons = couponsData.filter(coupon => {
-        if (tabValue === '1' && adminFilter) {
-            return coupon.adminId === adminFilter;
-        }
+    // const filteredCoupons = couponsData.filter(coupon => {
+    //     if (tabValue === '1' && adminFilter) {
+    //         return coupon.adminId === adminFilter;
+    //     }
+    //     if (tabValue === '2' && dateRange.start && dateRange.end) {
+    //         const couponDate = dayjs(coupon.createdDate);
+    //         return couponDate.isAfter(dateRange.start) && couponDate.isBefore(dateRange.end);
+    //     }
+    //     return true; //no filter applied
+    // });
+
+    // handle filtering by date range
+    const handleFilterByDateRange = async () => {
         if (tabValue === '2' && dateRange.start && dateRange.end) {
-            const couponDate = dayjs(coupon.createdDate);
-            return couponDate.isAfter(dateRange.start) && couponDate.isBefore(dateRange.end);
+            try {
+                const apiURL = `https://localhost:7048/api/Coupons/dateRange?d1=${dateRange.start}&d2=${dateRange.end}`;
+
+                const response = await fetch(apiURL, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const filteredCoupons = await response.json();
+                    setCouponsData(filteredCoupons); // update table with filtered data
+                    console.log("Filtered coupons:", filteredCoupons);
+                }
+                else {
+                    console.error("Failed to filter coupons");
+                    const errorText = await response.text();
+                    console.error("Error fetching filtered coupons:", errorText);
+                    alert(errorText);
+                }
+            } catch (error) {
+                console.error("Error fetching filtered coupons:", error);
+                alert(error.response?.data || "An error occurred while fetching coupons");
+            }
         }
-        return true; //no filter applied
-    });
+    };
+
+    const handleFilterByAdmin = async () => {
+        if (tabValue === '1' && adminFilter) { 
+            try {
+                const apiURL = `https://localhost:7048/api/Coupons/CouponByAdmin/${adminFilter}`;
+                
+                const response = await fetch(apiURL, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                if (response.ok) {
+                    const filteredCoupons = await response.json(); 
+                    setCouponsData(filteredCoupons); 
+                    console.log("Filtered coupons by admin:", filteredCoupons);
+                } else {
+                    console.error("Failed to filter coupons by admin");
+                    const errorText = await response.text();
+                    console.error("Error fetching filtered coupons:", errorText);
+                    alert(errorText);
+                }
+            } catch (error) {
+                console.error("Error fetching filtered coupons:", error);
+                alert("An error occurred while fetching coupons by admin");
+            }
+        }
+    };
+
+    // function for reset the table filter
+    const handleResetFilters = async () => {
+        try {
+            const response = await fetch('https://localhost:7048/api/Coupons/Coupons', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include'
+            });
+    
+            if (response.ok) {
+                const allCoupons = await response.json();
+                setCouponsData(allCoupons); // reset to show all coupons
+                
+                // clear the filter fields:
+                setAdminFilter('');       
+                setDateRange({ start: '', end: '' });
+                console.log("Filters reset, showing all coupons:", allCoupons);
+            } else {
+                console.error("Failed to fetch all coupons");
+            }
+        } catch (error) {
+            console.error("Error resetting filters:", error);
+        }
+    };
+    
+
 
     return (
         <div>
@@ -228,7 +317,7 @@ export default function CouponsManage() {
                         </Box>
                         <TabPanel value="1" sx={{ display: tabValue === '1' ? 'flex' : 'none', flexDirection: 'column', alignItems: 'flex-start', width: '50%' }}>
                             <TextField
-                                label="Filter by Admin ID"
+                                label="Filter by Admin Username"
                                 value={adminFilter}
                                 onChange={(e) => setAdminFilter(e.target.value)}
                                 fullWidth
@@ -253,7 +342,9 @@ export default function CouponsManage() {
                         </TabPanel>
                     </TabContext>
                 </Box>
-                <Button>Filter</Button>
+                <Button onClick={tabValue === '1' ? handleFilterByAdmin : handleFilterByDateRange}>Filter</Button>
+                <Button onClick={handleResetFilters}>Reset</Button>
+
             </div>
 
             <br />    <br />
@@ -275,79 +366,81 @@ export default function CouponsManage() {
                             <TableCell align="left">Actions</TableCell>
                         </TableRow>
                     </TableHead>
-                    <TableBody>
-                        {couponsData.map((coupon, index) => (
-                            <TableRow key={index}>
-                                <TableCell>
-                                    <span>
-                                        {coupon.couponId}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <span>
-                                        {coupon.code}
-                                    </span>
-                                </TableCell>
-                                <TableCell align="center">
-                                    <span>
-                                        {coupon.isDoublePromotions ? "Yes" : "No"}
-                                    </span>
-                                </TableCell>
-                                <TableCell align="left">
-                                    <span>
-                                        {coupon.adminId}
-                                    </span>
-                                </TableCell>
+                    {couponsData && (
+                        <TableBody>
+                            {couponsData.map((coupon, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>
+                                        <span>
+                                            {coupon.couponId}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span>
+                                            {coupon.code}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <span>
+                                            {coupon.isDoublePromotions ? "Yes" : "No"}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        <span>
+                                            {coupon.adminId}
+                                        </span>
+                                    </TableCell>
 
-                                <TableCell align="left">
-                                    <span>
-                                        {dayjs(coupon.createdDate).locale('he').format('DD/MM/YYYY')}
+                                    <TableCell align="left">
+                                        <span>
+                                            {dayjs(coupon.createdDate).locale('he').format('DD/MM/YYYY')}
 
-                                    </span>
-                                </TableCell>
-                                <TableCell align="left">
-                                    <span>
-                                        {coupon.isPercentageDiscount ? "Yes" : "No"}
-                                    </span>
-                                </TableCell>
-                                <TableCell align="left">
-                                    <span>
-                                        {coupon.discount}
-                                    </span>
-                                </TableCell>
-                                <TableCell align="left">
-                                    <span>
+                                        </span>
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        <span>
+                                            {coupon.isPercentageDiscount ? "Yes" : "No"}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        <span>
+                                            {coupon.discount}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        <span>
 
-                                        {coupon.expirationDate ? dayjs(coupon.expirationDate).locale('he').format('DD/MM/YYYY') : "No expiration date"}
+                                            {coupon.expirationDate ? dayjs(coupon.expirationDate).locale('he').format('DD/MM/YYYY') : "No expiration date"}
 
-                                    </span>
-                                </TableCell>
+                                        </span>
+                                    </TableCell>
 
-                                <TableCell align="left">
-                                    <span>
-                                        {coupon.maxUsage != null ? coupon.maxUsage : "Unlimited"}
-                                    </span>
-                                </TableCell>
+                                    <TableCell align="left">
+                                        <span>
+                                            {coupon.maxUsage != null ? coupon.maxUsage : "Unlimited"}
+                                        </span>
+                                    </TableCell>
 
-                                <TableCell align="left">
-                                    <span>
-                                        {coupon.description}
-                                    </span>
-                                </TableCell>
+                                    <TableCell align="left">
+                                        <span>
+                                            {coupon.description}
+                                        </span>
+                                    </TableCell>
 
-                                <TableCell align="center">
-                                    <IconButton aria-label="edit" onClick={() => handleEditCoupon(coupon)}>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton aria-label="delete" onClick={() => handleDeleteCoupon(coupon.couponId)}>
-                                        <DeleteIcon />
-                                    </IconButton>
+                                    <TableCell align="center">
+                                        <IconButton aria-label="edit" onClick={() => handleEditCoupon(coupon)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton aria-label="delete" onClick={() => handleDeleteCoupon(coupon.couponId)}>
+                                            <DeleteIcon />
+                                        </IconButton>
 
-                                </TableCell>
+                                    </TableCell>
 
-                            </TableRow>
-                        ))}
-                    </TableBody>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    )}
                 </Table>
             </TableContainer>
             {editingCoupon && (
