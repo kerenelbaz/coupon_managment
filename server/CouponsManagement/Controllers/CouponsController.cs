@@ -20,35 +20,44 @@ namespace CouponsManagement.Controllers
             _context = context;
 
         }
+        ///All API request required admin logged in
 
+        /// <summary>
+        /// Recive all coupons from the database
+        /// </summary>
+        /// <returns>JSON object of all coupons</returns>
         [HttpGet("Coupons")]
         public async Task<IActionResult> GetAllCoupons()
         {
             var sessionAdmin = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(sessionAdmin))
-                return Unauthorized("Please login with admin credential first");
+                return Unauthorized(new { message = "No user is logged in." });
 
             var coupons = await _context.Coupons.ToListAsync();
             return Ok(coupons);
         }
 
-       
+        /// <summary>
+        /// Creat coupon api
+        /// </summary>
+        /// <param name="req">request body contains all coupon's parameters in order to create new coupon</param>
+        /// <returns>JSON object of the new coupon</returns>
         [HttpPut("CreateCoupon")]
         public async Task<IActionResult> CreateCoupon([FromBody] CreateCoupon req)
         {
             var sessionAdmin = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(sessionAdmin))
-                return Unauthorized("Please login with admin credential first");
+                return Unauthorized(new { message = "No user is logged in." });
 
 
             Admin adminUser = _context.Admins.SingleOrDefault(a => a.Username == sessionAdmin);
             if (adminUser == null)
-                return Unauthorized("Admin not found");
+                return Unauthorized(new { message = "Admin not found" });
 
             var existingCoupon = await _context.Coupons.SingleOrDefaultAsync(
                 c => c.Code == req.Code);
             if (existingCoupon != null)
-                return BadRequest("Coupon code already exist in the system");
+                return BadRequest(new { message="Coupon code already exist in the system" });
 
             var newCoupon = new Coupon
             {
@@ -74,25 +83,31 @@ namespace CouponsManagement.Controllers
             return Ok(createdCoupon);
         }
 
+        /// <summary>
+        /// Edits an existing coupon's details by couponID
+        /// </summary>
+        /// <param name="couponId">CouponIDd/param>
+        /// <param name="req">rquest body contain the coupon's parameters that need to be update</param>
+        /// <returns></returns>
         [HttpPatch("{couponId:int}")]
         public IActionResult EditCoupon(int couponId, [FromBody] EditCoupon req)
         {
             var sessionAdmin = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(sessionAdmin))
-                return Unauthorized("Please login with admin credential first");
+                return Unauthorized(new { message = "No user is logged in." });
 
 
             var couponEdit = _context.Coupons.SingleOrDefault(c =>
             c.CouponId == couponId);
             if (couponEdit == null)
-                return BadRequest("Coupon not found");
+                return BadRequest(new { message = "Coupon not found" });
 
             // Check update coupon code uniqness 
             if (!String.IsNullOrEmpty(req.Code) && req.Code != couponEdit.Code)
             {
                 var existingCouponCode = _context.Coupons.SingleOrDefault(c => c.Code == req.Code);
                 if (existingCouponCode != null)
-                    return BadRequest("Coupon code already exists in the system.");
+                    return BadRequest(new { message = "Coupon code already exists in the system." });
                 couponEdit.Code = req.Code;
             }
 
@@ -117,27 +132,38 @@ namespace CouponsManagement.Controllers
 
             _context.Update(couponEdit);
             _context.SaveChanges();
-            return Ok("Coupon updated successfully!");
+            return Ok(new { message = "Coupon updated successfully!" });
         }
 
+
+        /// <summary>
+        /// Delete a coupon by coupon ID
+        /// </summary>
+        /// <param name="couponId">CouponId</param>
         [HttpDelete("{couponId:int}")]
         public IActionResult DeleteCoupon(int couponId)
         {
             // Checking if admin is logged in
             var sessionAdmin = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(sessionAdmin))
-                return Unauthorized("Please login with admin credential first");
+                return Unauthorized(new { message = "No user is logged in." });
 
             var coupon = _context.Coupons.SingleOrDefault(c =>
             c.CouponId == couponId);
             if (coupon == null)
-                return BadRequest("Coupon not found");
+                return BadRequest(new { message = "Coupon not found" });
 
             _context.Coupons.Remove(coupon);
             _context.SaveChanges();
-            return Ok("Coupon deleted");
+            return Ok(new { message = "Coupon deleted" });
         }
 
+
+        /// <summary>
+        /// API for apply coupon code on price
+        /// </summary>
+        /// <param name="couponCode"></param>
+        /// <returns>returns the final price as a JSON obejct or additonal error messages</returns>
         [HttpPost("apply-coupon")]
         public async Task<IActionResult> ApplyCoupons([FromBody] string couponCode)
         {
@@ -158,7 +184,7 @@ namespace CouponsManagement.Controllers
             // check coupon code validation
             var coupon = await _context.Coupons.SingleOrDefaultAsync(c => c.Code == couponCode);
             if (coupon == null || coupon.ExpirationDate<DateTime.Now)
-                return BadRequest("Invalid or expired coupon code.");
+                return BadRequest(new { message = "Invalid or expired coupon code." });
 
             
             //check coupon usage
@@ -169,12 +195,12 @@ namespace CouponsManagement.Controllers
                 await _context.SaveChangesAsync();
             }
             else if (coupon.MaxUsage.HasValue && coupon.MaxUsage <= 0)
-                return BadRequest("Coupon code used the max usage");
+                return BadRequest(new { message = "Coupon code used the max usage" });
 
             //check if coupon code has no double promotion
             string doublePromotionFlag = HttpContext.Session.GetString("DoublePromotion");
             if (doublePromotionFlag == "false")
-                return BadRequest("You used a non double promotion code beforeת can't use this code now.");
+                return BadRequest(new { message = "You used a non double promotion code beforeת can't use this code now." });
 
             if (!coupon.IsDoublePromotions) //saving to the session in case the current coupon is not allow double promotion
             {
@@ -186,16 +212,18 @@ namespace CouponsManagement.Controllers
             else finalPrice -= coupon.Discount;
 
             if (finalPrice <= 0)
-                return BadRequest("You reached the minimum discounted price");
+                return BadRequest(new { message = "You reached the minimum discounted price" });
 
             HttpContext.Session.SetString("price", finalPrice.ToString());
 
-            //return Ok($"Price after discount is:{finalPrice}");
-            return Ok(new { finalPrice = finalPrice });
+            return Ok(new { finalPrice });
 
         }
 
-
+        /// <summary>
+        /// Test API for checking if there is a price saved in the session 
+        /// </summary>
+        [NonAction]
         [HttpGet("CheckSessionPrice")]
         public IActionResult GetCurrentPriceSession()
         {
@@ -206,47 +234,58 @@ namespace CouponsManagement.Controllers
         }
 
 
+        /// <summary>
+        /// Filter request API for filtering coupon list by admin username
+        /// </summary>
+        /// <param name="username">admin username</param>
+        /// <returns>filtered coupon list by admin</returns>
         [HttpGet("CouponByAdmin/{username}")]
         public async Task<IActionResult> GetCouponsByCreatedAdmin(string username)
         {
             // Checking if admin is logged in
             var sessionAdmin = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(sessionAdmin))
-                return Unauthorized("Please login with admin credential first");
+                return Unauthorized(new { message = "No user is logged in." });
 
             //find admin by username
             var admin = await _context.Admins.SingleOrDefaultAsync(a => a.Username == username);
-            if (admin == null) return NotFound("Admin not found");
+            if (admin == null) return NotFound(new { message = "Admin not found" });
 
             //get all coupons created by specific admin
             var coupons = await _context.Coupons.Where(c => c.AdminId == admin.AdminId).ToListAsync();
             if (coupons == null || coupons.Count == 0)
             {
-                return BadRequest("Admin didn't create coupons yet.");
+                return BadRequest(new { message = "Admin didn't create coupons yet." });
             }
             return Ok(coupons);
             
         }
 
+        /// <summary>
+        /// Filter request API for filtering coupon list by date range
+        /// </summary>
+        /// <param name="d1">start date</param>
+        /// <param name="d2">end date</param>
+        /// <returns>filtered coupon list by date range</returns>
         [HttpGet("dateRange")]
         public async Task <IActionResult> GetCouponsByDateRange(string d1, string d2)
         {
             // Checking if admin is logged in
             var sessionAdmin = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(sessionAdmin))
-                return Unauthorized("Please login with admin credential first");
+                return Unauthorized(new { message = "No user is logged in." });
 
-            
+
             DateTime startDate = DateTime.Parse(d1);
             DateTime endDate = DateTime.Parse(d2);
 
             if (d1 == null || d2 == null)
-                return BadRequest("Oops, invalid date. insert dates in the format dd-MM-yyyy");
+                return BadRequest(new { message = "Oops, invalid date. insert dates in the format dd-MM-yyyy" });
 
             var coupons = await _context.Coupons.Where(c => c.CreatedDate.Date >=
             startDate && c.CreatedDate.Date <= endDate).ToListAsync();
 
-            if (!coupons.Any()) return NotFound("No coupons found during date range");
+            if (!coupons.Any()) return NotFound(new { message = "No coupons found during date range" });
             
 
             return (Ok(coupons));
@@ -255,9 +294,18 @@ namespace CouponsManagement.Controllers
         }
 
 
+        /// <summary>
+        /// Export all coupons data to an Excel file
+        /// </summary>
+        /// <returns>return file link</returns>
         [HttpGet("ExportExcel")]
         public ActionResult ExportExcel()
         {
+            // Checking if admin is logged in
+            var sessionAdmin = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(sessionAdmin))
+                return Unauthorized(new { message = "No user is logged in." });
+
             var _couponData = GetCouponsData();
 
             //declare on excel workbook
@@ -270,12 +318,12 @@ namespace CouponsManagement.Controllers
                     wb.SaveAs(ms);
                     return File(ms.ToArray(),"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","Coupons_Report.xlsx");
                 }
-
             }
-
-
         }
 
+        /// <summary>
+        /// Retreive all coupon data from the database and format it into a DataTable for export
+        /// </summary>
         [NonAction]
         private DataTable GetCouponsData() {
 
