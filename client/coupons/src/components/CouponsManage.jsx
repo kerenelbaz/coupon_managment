@@ -44,6 +44,8 @@ export default function CouponsManage() {
      * UseEffect for fetching coupon data from the API, and allows the @couponsData list to be instantly updated with any changes 
      */
     useEffect(() => {
+        let isOnSession = true; // flag to track if component is on the session
+
         const fetchData = async () => {
             try {
                 const response = await fetch('https://localhost:7048/api/Coupons/Coupons', {
@@ -51,9 +53,13 @@ export default function CouponsManage() {
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include'
                 });
-                if (!response.ok) {
+                if (!response.ok && isOnSession) {
                     alert("please reconnect your admin account")
                     navigate('/Login');
+                }
+                else if (isOnSession) {
+                    const responseData = await response.json();
+                    setCouponsData(responseData);
                 }
                 const responseData = await response.json();
                 setCouponsData(responseData);
@@ -63,7 +69,12 @@ export default function CouponsManage() {
             }
         };
         fetchData();
-    }, []);
+
+        //cleanup function to set the isOnSession flag to false when session expires
+        return () => {
+            isOnSession = false;
+        }
+    }, [navigate]);
 
     /**
      * handle edit mode for a selected coupon
